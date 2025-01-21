@@ -2,6 +2,7 @@ package org.prewave.task.service
 
 import org.prewave.task.entity.dto.EdgeDTO
 import org.prewave.task.entity.dto.TreeDTO
+import org.prewave.task.exception.EntityNotFoundException
 import org.prewave.task.exception.InternalServerErrorException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -23,6 +24,10 @@ class TreeService(
      */
     fun getTree(parentNodeId: Int): TreeDTO {
         log.info("Getting tree for parentNodeId={}", parentNodeId)
+
+        if (!edgeService.isNodeExist(parentNodeId)) {
+            throw EntityNotFoundException("No node found with parentNodeId=$parentNodeId")
+        }
 
         val rootTreeDto = TreeDTO().apply {
             this.nodeId = parentNodeId
@@ -65,12 +70,12 @@ class TreeService(
 
     /**
      * As we can have up to several millions of fromIds, we should limit their amount when making SQL request
-     * Therefore, we break the whole list into smaller pieces and make several smaller SQL requestds
+     * Therefore, we break the whole list into smaller pieces and make several smaller SQL requests
      */
     private fun findEdgesByFromIdsBatched(fromIds: List<Int>): List<EdgeDTO> {
-        val batchesFromids = fromIds.chunked(EDGES_REQUEST_BATCH_SIZE)
+        val batchesFromIds = fromIds.chunked(EDGES_REQUEST_BATCH_SIZE)
 
-        return batchesFromids.map { curBatchFromIds ->
+        return batchesFromIds.map { curBatchFromIds ->
             edgeService.findAllByFromIds(curBatchFromIds)
         }.flatten()
     }

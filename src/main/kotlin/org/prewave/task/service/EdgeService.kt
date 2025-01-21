@@ -15,6 +15,10 @@ class EdgeService(
     private val edgeRepository: EdgeRepository
 ) {
 
+    fun isNodeExist(nodeId: Int): Boolean {
+        return edgeRepository.isNodeExist(nodeId)
+    }
+
     fun findAllByFromIds(fromIds: List<Int>): List<EdgeDTO> {
         return edgeRepository.findAllByFromIds(fromIds)
     }

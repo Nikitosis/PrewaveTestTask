@@ -16,6 +16,14 @@ class EdgeRepository(
     private val dslContext: DSLContext
 ) {
 
+    fun isNodeExist(nodeId: Int): Boolean {
+        return dslContext.fetchExists(
+            dslContext.selectOne()
+                .from(EDGE)
+                .where(EDGE.FROM_ID.eq(nodeId).or(EDGE.TO_ID.eq(nodeId)))
+        )
+    }
+
     fun findAllByFromIds(fromIds: List<Int>): List<EdgeDTO> {
         val edges = dslContext.select()
             .from(EDGE)
