@@ -3,6 +3,7 @@ package org.prewave.task.controller
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
 import org.prewave.task.entity.dto.EdgeDTO
+import org.prewave.task.entity.dto.TreeDTO
 import org.prewave.task.service.EdgeService
 import org.prewave.task.service.TreeService
 import org.springframework.http.ResponseEntity
@@ -21,7 +22,7 @@ class TreeController(
     private val treeService: TreeService
 ) {
     @GetMapping
-    fun getTree(@RequestParam parentNodeId: Int): ResponseEntity<Any> {
+    fun getTree(@RequestParam parentNodeId: Int): ResponseEntity<TreeDTO> {
         val tree = treeService.getTree(parentNodeId)
         return ResponseEntity.ok(tree)
     }
