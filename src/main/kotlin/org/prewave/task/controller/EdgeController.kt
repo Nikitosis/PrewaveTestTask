@@ -26,8 +26,8 @@ class EdgeController(
     }
 
     @DeleteMapping
-    fun removeEdge(@Valid @RequestBody edgeDTO: EdgeDTO): ResponseEntity<Any> {
-        edgeService.removeEdge(edgeDTO)
+    fun removeEdge(@RequestParam fromId: Int, @RequestParam toId: Int): ResponseEntity<Any> {
+        edgeService.removeEdge(fromId, toId)
         return ResponseEntity.ok().build()
     }
 }

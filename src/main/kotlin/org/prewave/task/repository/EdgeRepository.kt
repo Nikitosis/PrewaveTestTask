@@ -4,6 +4,10 @@ import org.jooq.DSLContext
 import org.prewave.task.entity.dto.EdgeDTO
 import org.prewave.task.entity.generated.tables.records.EdgeRecord
 import org.prewave.task.entity.generated.tables.references.EDGE
+import org.prewave.task.exception.EntityAlreadyExistsException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -41,14 +45,24 @@ class EdgeRepository(
     }
 
     fun addEdge(fromId: Int, toId: Int) {
-        val result = dslContext.insertInto(EDGE)
-            .values(fromId, toId)
-            .execute()
+        try {
+            val result = dslContext.insertInto(EDGE)
+                .values(fromId, toId)
+                .execute()
+        } catch (e: DuplicateKeyException) {
+            //if we have a race condition, we could encounter this issue, so just in case, lets handle the error
+            log.warn("Tried to insert a duplicate edge", e)
+            throw EntityAlreadyExistsException("Edge with fromId=${fromId}; toId=${toId} already exists")
+        }
     }
 
     fun removeEdge(fromId: Int, toId: Int) {
         val result = dslContext.delete(EDGE)
             .where(EDGE.FROM_ID.eq(fromId).and(EDGE.TO_ID.eq(toId)))
             .execute()
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }

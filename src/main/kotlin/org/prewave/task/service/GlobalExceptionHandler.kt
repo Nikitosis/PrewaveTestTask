@@ -1,5 +1,6 @@
 package org.prewave.task.service
 
+import org.jooq.exception.DataAccessException
 import org.prewave.task.exception.EntityAlreadyExistsException
 import org.prewave.task.exception.EntityNotFoundException
 import org.prewave.task.exception.InternalServerErrorException
@@ -20,6 +21,7 @@ import java.util.stream.Collectors
 
 @ControllerAdvice
 class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
+
 
     override fun handleMethodArgumentNotValid(
         ex: MethodArgumentNotValidException,
@@ -42,13 +44,19 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(EntityAlreadyExistsException::class)
     fun handleEntityAlreadyExistsException(e: EntityAlreadyExistsException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(e.message, HttpStatus.CONFLICT)
     }
 
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(e: InternalServerErrorException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    @ExceptionHandler(RuntimeException::class)
+    fun handleRuntimeException(e: RuntimeException): ResponseEntity<Any> {
+        log.warn(e.message)
+        return ResponseEntity("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     companion object {

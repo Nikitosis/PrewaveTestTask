@@ -29,14 +29,14 @@ class EdgeService(
         edgeRepository.addEdge(edgeDto.fromId!!, edgeDto.toId!!)
     }
 
-    fun removeEdge(edgeDto: EdgeDTO) {
-        log.info("Removing edge: {}", edgeDto)
-        val existingEdge = edgeRepository.findByFromIdAndToId(edgeDto.fromId!!, edgeDto.toId!!)
+    fun removeEdge(fromId: Int, toId: Int) {
+        log.info("Removing edge fromId={}; toId={}", fromId, toId)
+        val existingEdge = edgeRepository.findByFromIdAndToId(fromId, toId)
         if (existingEdge == null) {
-            throw EntityNotFoundException("Edge with fromId=${edgeDto.fromId}; toId=${edgeDto.toId} not found")
+            throw EntityNotFoundException("Edge with fromId=${fromId}; toId=${toId} not found")
         }
 
-        edgeRepository.removeEdge(edgeDto.fromId!!, edgeDto.toId!!)
+        edgeRepository.removeEdge(fromId, toId)
     }
 
     companion object {
