@@ -51,7 +51,7 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(e: InternalServerErrorException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity(ErrorResponse("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ErrorResponse(e.message!!), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ExceptionHandler(RuntimeException::class)
