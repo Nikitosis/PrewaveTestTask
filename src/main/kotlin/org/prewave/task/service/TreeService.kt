@@ -50,15 +50,13 @@ class TreeService(
                     throw InternalServerErrorException("Cycle detected in a tree fromId=${curEdge.fromId}; toId=${curEdge.toId}")
                 }
 
-                val curTreeDto = TreeDTO().apply {
+                val curTreeDtoTo = TreeDTO().apply {
                     this.nodeId = curEdge.toId
                     this.children = mutableListOf()
                 }
-                nodeIdToTreeDto.put(curTreeDto.nodeId!!, curTreeDto)
+                nodeIdToTreeDto.put(curTreeDtoTo.nodeId!!, curTreeDtoTo)
 
                 val curTreeDtoFrom = nodeIdToTreeDto.get(curEdge.fromId)!!
-                val curTreeDtoTo = nodeIdToTreeDto.get(curEdge.toId)!!
-
                 curTreeDtoFrom.children!!.add(curTreeDtoTo)
             }
 
