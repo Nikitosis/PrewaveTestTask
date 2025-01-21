@@ -1,6 +1,7 @@
 package org.prewave.task.service
 
 import org.jooq.exception.DataAccessException
+import org.prewave.task.entity.dto.ErrorResponse
 import org.prewave.task.exception.EntityAlreadyExistsException
 import org.prewave.task.exception.EntityNotFoundException
 import org.prewave.task.exception.InternalServerErrorException
@@ -32,31 +33,31 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
         val errorMsg = ex.bindingResult.fieldErrors
             .map { obj -> "${obj.field} ${obj.defaultMessage}"}
             .joinToString("\n")
-        return ResponseEntity(errorMsg, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(ErrorResponse(errorMsg), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
     fun handleEntityNotFoundException(e: EntityNotFoundException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity(e.message, HttpStatus.NOT_FOUND)
+        return ResponseEntity(ErrorResponse(e.message!!), HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(EntityAlreadyExistsException::class)
     fun handleEntityAlreadyExistsException(e: EntityAlreadyExistsException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity(e.message, HttpStatus.CONFLICT)
+        return ResponseEntity(ErrorResponse(e.message!!), HttpStatus.CONFLICT)
     }
 
     @ExceptionHandler(InternalServerErrorException::class)
     fun handleInternalServerErrorException(e: InternalServerErrorException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ErrorResponse("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     @ExceptionHandler(RuntimeException::class)
     fun handleRuntimeException(e: RuntimeException): ResponseEntity<Any> {
         log.warn(e.message)
-        return ResponseEntity("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR)
+        return ResponseEntity(ErrorResponse("Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
     companion object {
