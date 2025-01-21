@@ -2,6 +2,9 @@ package org.prewave.task.service
 
 import org.prewave.task.exception.EntityAlreadyExistsException
 import org.prewave.task.exception.EntityNotFoundException
+import org.prewave.task.exception.InternalServerErrorException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatusCode
@@ -32,12 +35,23 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
 
     @ExceptionHandler(EntityNotFoundException::class)
     fun handleEntityNotFoundException(e: EntityNotFoundException): ResponseEntity<Any> {
+        log.warn(e.message)
         return ResponseEntity(e.message, HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(EntityAlreadyExistsException::class)
     fun handleEntityAlreadyExistsException(e: EntityAlreadyExistsException): ResponseEntity<Any> {
+        log.warn(e.message)
         return ResponseEntity(e.message, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler(InternalServerErrorException::class)
+    fun handleInternalServerErrorException(e: InternalServerErrorException): ResponseEntity<Any> {
+        log.warn(e.message)
+        return ResponseEntity(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(this::class.java)
+    }
 }
