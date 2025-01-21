@@ -1,0 +1,12 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:17
+    container_name: prewave_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=prewave
+      - POSTGRES_USER=prewave-user
+      - POSTGRES_PASSWORD=prewave-password
+    ports:
+      - "5432:5432"
