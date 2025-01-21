@@ -13,6 +13,14 @@ class TreeService(
     private val edgeService: EdgeService
 ) {
 
+    /**
+     * Starting from parentNodeId, receive all connected edges which are coming from the node.
+     * Then for all the edges get destination nodes.
+     * Then for the destination nodes receive all connected edges which are coming from the nodes.
+     * Then for all the edges get destination nodes.
+     * Repeat the process until there are no more incoming edges.
+     * Basically it is very similar to BFS algorithm
+     */
     fun getTree(parentNodeId: Int): TreeDTO {
         log.info("Getting tree for parentNodeId={}", parentNodeId)
 

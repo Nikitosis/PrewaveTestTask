@@ -50,7 +50,8 @@ class EdgeRepository(
                 .values(fromId, toId)
                 .execute()
         } catch (e: DuplicateKeyException) {
-            //if we have a race condition, we could encounter this issue, so just in case, lets handle the error
+            //if we have a race condition, we could encounter this error when we try to insert existing edge
+            //so just in case, lets handle the error
             log.warn("Tried to insert a duplicate edge", e)
             throw EntityAlreadyExistsException("Edge with fromId=${fromId}; toId=${toId} already exists")
         }
