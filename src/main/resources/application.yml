@@ -1,0 +1,12 @@
+server:
+  port: 80
+
+spring:
+  liquibase:
+    change-log: classpath:/db/changelog/db.changeLog-master.xml
+    enabled: true
+  datasource:
+    url: ${db-url:jdbc:postgresql://localhost:5432/prewave}
+    username: ${db-username:prewave-user}
+    password: ${db-password:prewave-password}
+    driver-class-name: org.postgresql.Driver
