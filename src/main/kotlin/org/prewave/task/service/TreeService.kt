@@ -1,5 +1,6 @@
 package org.prewave.task.service
 
+import org.prewave.task.entity.dto.EdgeDTO
 import org.prewave.task.entity.dto.TreeDTO
 import org.prewave.task.exception.InternalServerErrorException
 import org.slf4j.Logger
@@ -26,8 +27,7 @@ class TreeService(
         var curLevelNodes = listOf(parentNodeId)
 
         while (true) {
-            //TODO: add batching
-            val curLevelEdges = edgeService.findAllByFromIds(curLevelNodes)
+            val curLevelEdges = findEdgesByFromIdsBatched(curLevelNodes)
             if (curLevelEdges.isEmpty()) {
                 break
             }
@@ -55,7 +55,21 @@ class TreeService(
         return nodeIdToTreeDto.get(parentNodeId)!!
     }
 
+    /**
+     * As we can have up to several millions of fromIds, we should limit their amount when making SQL request
+     * Therefore, we break the whole list into smaller pieces and make several smaller SQL requestds
+     */
+    private fun findEdgesByFromIdsBatched(fromIds: List<Int>): List<EdgeDTO> {
+        val batchesFromids = fromIds.chunked(EDGES_REQUEST_BATCH_SIZE)
+
+        return batchesFromids.map { curBatchFromIds ->
+            edgeService.findAllByFromIds(curBatchFromIds)
+        }.flatten()
+    }
+
     companion object {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
+
+        private const val EDGES_REQUEST_BATCH_SIZE = 10000
     }
 }

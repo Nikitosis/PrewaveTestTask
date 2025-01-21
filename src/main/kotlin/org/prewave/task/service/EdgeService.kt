@@ -29,7 +29,6 @@ class EdgeService(
         edgeRepository.addEdge(edgeDto.fromId!!, edgeDto.toId!!)
     }
 
-    //TODO: maybe add transactions in case of concurrent calls?
     fun removeEdge(edgeDto: EdgeDTO) {
         log.info("Removing edge: {}", edgeDto)
         val existingEdge = edgeRepository.findByFromIdAndToId(edgeDto.fromId!!, edgeDto.toId!!)
