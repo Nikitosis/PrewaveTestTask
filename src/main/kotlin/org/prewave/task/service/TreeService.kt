@@ -81,6 +81,6 @@ class TreeService(
     companion object {
         private val log: Logger = LoggerFactory.getLogger(this::class.java)
 
-        private const val EDGES_REQUEST_BATCH_SIZE = 10000
+        private const val EDGES_REQUEST_BATCH_SIZE = 30000
     }
 }
